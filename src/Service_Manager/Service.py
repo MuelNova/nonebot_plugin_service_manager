@@ -75,7 +75,7 @@ class Service(object):
                 )
     def is_enabled(self) -> Rule:
         async def _is_enabled(bot: Bot, event: Event, state: T_State) -> bool:
-            status = await check_plugin(event.dict().get('group_id'),self.name)
+            status = check_plugin(event.dict().get('group_id'),self.name)
             return status
         return Rule(_is_enabled)
         
