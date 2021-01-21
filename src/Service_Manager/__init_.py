@@ -43,7 +43,7 @@ lssv = on_command('lssv',rule=to_me(),priority=1)
 async def lssv_h(bot: Bot, event: Event, state: T_State):
     plus = ''
     for i in plugins:
-        state = await check_plugin(event.dict().get('group_id'),i)
+        state = check_plugin(event.dict().get('group_id'),i)
         txt = '| {} | {}\n'.format('○'if state else '×',i)
         plus += txt
     
