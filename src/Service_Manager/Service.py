@@ -1,6 +1,5 @@
 from pathlib import Path
 import json
-import aiofiles
 
 from nonebot.permission import SUPERUSER, Permission
 from nonebot.rule import Rule
@@ -81,38 +80,35 @@ class Service(object):
         return Rule(_is_enabled)
         
     
-async def check_plugin(g_id: int, p_name: str) -> bool:
-    async with aiofiles.open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
-        cfg = await f.read()
-        cfg = json.loads(cfg)
+def check_plugin(g_id: int, p_name: str) -> bool:
+    with open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
+        cfg = json.load(f)
     if g_id not in cfg.get('disabled_groups'):
         if cfg.get('enable_on_default') or g_id in cfg.get('enabled_groups'):
             return True
     return False
 
-async def disable_plugin(g_id: int, p_name: str):
-    async with aiofiles.open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
-        cfg = await f.read()
-        cfg = json.loads(cfg)
+def disable_plugin(g_id: int, p_name: str):
+    with open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
+        cfg = json.load(f)
     enabled = set(cfg.get('enabled_groups'))
     enabled.discard(g_id)
     disabled = set(cfg.get('disabled_groups'))
     disabled.add(g_id)
     cfg['enabled_groups'] = list(enabled)
     cfg['disabled_groups'] = list(disabled)
-    async with aiofiles.open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
-        await f.write(json.dumps(cfg,indent=2,ensure_ascii=False))
+    with open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(cfg,indent=2,ensure_ascii=False))
         
-async def enable_plugin(g_id: int, p_name: str):
-    async with aiofiles.open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
-        cfg = await f.read()
-        cfg = json.loads(cfg)
+def enable_plugin(g_id: int, p_name: str):
+    with open(Path(__file__).parent / '_services' / f'{p_name}.json','r',encoding='UTF-8') as f:
+        cfg = json.load(f)
     enabled = set(cfg.get('enabled_groups'))
     enabled.add(g_id)
     disabled = set(cfg.get('disabled_groups'))
     disabled.discard(g_id)
     cfg['enabled_groups'] = list(enabled)
     cfg['disabled_groups'] = list(disabled)
-    async with aiofiles.open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
-        await f.write(json.dumps(cfg,indent=2,ensure_ascii=False))
+    with open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
+        f.write(json.dumps(cfg,indent=2,ensure_ascii=False))
     
