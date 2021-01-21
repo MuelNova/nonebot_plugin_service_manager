@@ -1,8 +1,6 @@
 from pathlib import Path
 import json
 
-import aiofiles
-
 from .Service import *
 from nonebot import export, get_driver, on_command
 from nonebot.rule import to_me
@@ -24,11 +22,10 @@ def _init():
 async def _get_plugins():
     if not Path.is_file(cfg):
         return
-    async with aiofiles.open(cfg,'r',encoding='UTF-8') as f:
-        con = await f.read()
+    with open(cfg,'r',encoding='UTF-8') as f:
         global plugins
         try:
-            plugins = list(json.loads(con).get('plugins'))
+            plugins = list(json.load(f).get('plugins'))
             logger.info('成功添加%d个插件于分群管理'%len(plugins))
             logger.info(str(plugins))
         except Exception as e:
@@ -70,7 +67,7 @@ async def enable_g(bot: Bot, event: Event, state: T_State):
     done_plugins = list()
     for i in p_name:
         if i in plugins:
-            await enable_plugin(event.dict().get('group_id'),i)
+            enable_plugin(event.dict().get('group_id'),i)
             done_plugins.append(i)
     await enable_.finish('成功启用插件： {}'.format(' | '.join(p for p in done_plugins)))
         
@@ -80,6 +77,6 @@ async def disable_g(bot: Bot, event: Event, state: T_State):
     done_plugins = list()
     for i in p_name:
         if i in plugins:
-            await disable_plugin(event.dict().get('group_id'),i)
+            disable_plugin(event.dict().get('group_id'),i)
             done_plugins.append(i)
     await disable_.finish('成功禁用插件： {}'.format(' | '.join(p for p in done_plugins)))
