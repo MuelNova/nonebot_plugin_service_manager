@@ -93,25 +93,17 @@ def check_plugin(g_id: int, p_name: str) -> bool:
             return True
     return False
 
-def disable_plugin(g_id: int, p_name: str):
+def set_plugin(g_id: int, p_name: str,disable=False):
     cfg = _load_config(path=Path(__file__).parent / '_services' / f'{p_name}.json')
     enabled = set(cfg.get('enabled_groups'))
-    enabled.discard(g_id)
     disabled = set(cfg.get('disabled_groups'))
-    disabled.add(g_id)
+    if disable:
+        enabled.discard(g_id)
+        disabled.add(g_id)
+    else:
+        enabled.add(g_id)
+        disabled.discard(g_id)
     cfg['enabled_groups'] = list(enabled)
     cfg['disabled_groups'] = list(disabled)
     with open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
         json.dump(cfg,f,indent=2,ensure_ascii=False)
-        
-def enable_plugin(g_id: int, p_name: str):
-    cfg = _load_config(Path(__file__).parent / '_services' / f'{p_name}.json')
-    enabled = set(cfg.get('enabled_groups'))
-    enabled.add(g_id)
-    disabled = set(cfg.get('disabled_groups'))
-    disabled.discard(g_id)
-    cfg['enabled_groups'] = list(enabled)
-    cfg['disabled_groups'] = list(disabled)
-    with open(Path(__file__).parent / '_services' / f'{p_name}.json','w',encoding='UTF-8') as f:
-        json.dump(cfg,f,indent=2,ensure_ascii=False)
-    
