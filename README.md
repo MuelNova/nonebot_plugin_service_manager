@@ -31,6 +31,6 @@ pixiv_daily_call = on_command('车来',rule=to_me() & sv.is_enabled(),priority=5
 - 发送```@Bot lssv```查看权限开关
 
 # 更新计划
-- 把我上课时候偷偷写的Service的__init__重新搞一下，看着很脑残（
-- 添加```manage_permission```,```use_permission```
+- [X] 把我上课时候偷偷写的Service的__init__重新搞一下，看着很脑残（
+- [ ] 添加```manage_permission```,```use_permission```
 - ...
