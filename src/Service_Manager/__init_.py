@@ -67,7 +67,7 @@ async def enable_g(bot: Bot, event: Event, state: T_State):
     done_plugins = list()
     for i in p_name:
         if i in plugins:
-            enable_plugin(event.dict().get('group_id'),i)
+            set_plugin(event.dict().get('group_id'),i)
             done_plugins.append(i)
     await enable_.finish('成功启用插件： {}'.format(' | '.join(p for p in done_plugins)))
         
@@ -77,6 +77,6 @@ async def disable_g(bot: Bot, event: Event, state: T_State):
     done_plugins = list()
     for i in p_name:
         if i in plugins:
-            disable_plugin(event.dict().get('group_id'),i)
+            set_plugin(event.dict().get('group_id'),i,disable=True)
             done_plugins.append(i)
     await disable_.finish('成功禁用插件： {}'.format(' | '.join(p for p in done_plugins)))
