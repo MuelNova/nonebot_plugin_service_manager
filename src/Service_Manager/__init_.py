@@ -12,7 +12,7 @@ from nonebot.adapters.cqhttp import Bot, Event
 driver = get_driver()
 export().Service = Service
 
-plugins = list()
+plugins = []
 cfg = Path(__file__).parent / '_services' / 'gcfg.json'
 
 def _init():
@@ -64,19 +64,19 @@ async def disable_h(bot: Bot, event: Event, state: T_State):
 @enable_.got('p_name',prompt='你想启用哪些插件？')
 async def enable_g(bot: Bot, event: Event, state: T_State):
     p_name = state['p_name'].split(',')
-    done_plugins = list()
+    done_plugins = []
     for i in p_name:
         if i in plugins:
             set_plugin(event.dict().get('group_id'),i)
             done_plugins.append(i)
-    await enable_.finish('成功启用插件： {}'.format(' | '.join(p for p in done_plugins)))
+    await enable_.finish(f"成功启用插件： {' | '.join(done_plugins)}")
         
 @disable_.got('p_name',prompt='你想禁用哪些插件？')
 async def disable_g(bot: Bot, event: Event, state: T_State):
     p_name = state['p_name'].split(',')
-    done_plugins = list()
+    done_plugins = []
     for i in p_name:
         if i in plugins:
             set_plugin(event.dict().get('group_id'),i,disable=True)
             done_plugins.append(i)
-    await disable_.finish('成功禁用插件： {}'.format(' | '.join(p for p in done_plugins)))
+    await disable_.finish(f"成功禁用插件： {' | '.join(done_plugins)}")

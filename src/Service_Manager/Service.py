@@ -29,8 +29,7 @@ def _load_config(service=None,path=None) -> dict:
         path = service.loc
     with open(path,'r',encoding='UTF-8') as f:
         try:
-            cfg = json.load(f)
-            return cfg
+            return json.load(f)
         except Exception as e:
             logger.error(e)
             return {}
@@ -67,10 +66,10 @@ class Service(object):
                 indent=2,
                 ensure_ascii=False
                 )
-         
+
         if not Path.is_file(self.loc):
-            self.enabled_groups = list()
-            self.disabled_groups = list()
+            self.enabled_groups = []
+            self.disabled_groups = []
         else:
             cfg = _load_config(self)
             self.enabled_groups = cfg.get('enabled_groups')
@@ -79,8 +78,7 @@ class Service(object):
         
     def is_enabled(self) -> Rule:
         async def _is_enabled(bot: Bot, event: Event, state: T_State) -> bool:
-            status = check_plugin(event.dict().get('group_id'),self.name)
-            return status
+            return check_plugin(event.dict().get('group_id'),self.name)
         return Rule(_is_enabled)
         
     
@@ -88,9 +86,10 @@ def check_plugin(g_id: int, p_name: str) -> bool:
     if not Path.is_file(path := Path(__file__).parent / '_services' / f'{p_name}.json'):
         return False
     cfg = _load_config(path=path)
-    if g_id not in cfg.get('disabled_groups'):
-        if cfg.get('enable_on_default') or g_id in cfg.get('enabled_groups'):
-            return True
+    if g_id not in cfg.get('disabled_groups') and (
+        cfg.get('enable_on_default') or g_id in cfg.get('enabled_groups')
+    ):
+        return True
     return False
 
 def set_plugin(g_id: int, p_name: str,disable=False):
